@@ -2,8 +2,8 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: PedalKbdApp
- * RTE configuration: PedalKbdApp.rteconfig
+ * Project: PedalFotaKbdApp
+ * RTE configuration: PedalFotaKbdApp.rteconfig
 */
 #ifndef RTE_COMPONENTS_H
 #define RTE_COMPONENTS_H

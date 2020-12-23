@@ -1,0 +1,8 @@
+doc
+ESP32 ARDUINO
+sw/bootloader/Debug
+sw/bootloader/.settings
+sw/bootloader/.tracecompass
+.cproject
+.project
+sw/PedalKbdApp/.settings

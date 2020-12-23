@@ -2,8 +2,8 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: bootloader
- * RTE configuration: bootloader.rteconfig
+ * Project: KbdAppBootloader
+ * RTE configuration: KbdAppBootloader.rteconfig
 */
 #ifndef RTE_COMPONENTS_H
 #define RTE_COMPONENTS_H

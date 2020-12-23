@@ -42,14 +42,18 @@
 /* Flags can be used to control if building for development board or dongle */
 #define RSL10_DEV                       0
 #define RSL10_DONGLE                    1
+#define RSL10_UX_BLE_2KY                2
 #ifndef RSL10_DEV_OR_DONGLE
-#define RSL10_DEV_OR_DONGLE             RSL10_DEV
+#define RSL10_DEV_OR_DONGLE             RSL10_UX_BLE_2KY
 #endif
 
 /*** GPIO ***/
 #if (RSL10_DEV_OR_DONGLE == RSL10_DONGLE)
 #define CFG_nUPDATE_DIO                 6
 #define CFG_LED_RED_DIO                 8
+#elif (RSL10_DEV_OR_DONGLE == RSL10_UX_BLE_2KY)
+#define CFG_nUPDATE_DIO                 12
+#define CFG_LED_RED_DIO                 10
 #else
 #define CFG_nUPDATE_DIO                 5
 #define CFG_LED_RED_DIO                 6
@@ -60,6 +64,9 @@
 #if (RSL10_DEV_OR_DONGLE == RSL10_DONGLE)
 #define CFG_UART_RXD_DIO                7
 #define CFG_UART_TXD_DIO                10
+#elif (RSL10_DEV_OR_DONGLE == RSL10_UX_BLE_2KY)
+#define CFG_UART_RXD_DIO                2 // outer button switch
+#define CFG_UART_TXD_DIO                3 // inner button switch
 #else
 #define CFG_UART_RXD_DIO                4
 #define CFG_UART_TXD_DIO                5

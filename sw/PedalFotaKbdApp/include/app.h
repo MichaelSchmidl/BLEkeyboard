@@ -58,6 +58,11 @@ extern "C"
  * Defines
  * --------------------------------------------------------------------------*/
 
+#define VER_ID                  "PDLKBD"
+#define VER_MAJOR               0
+#define VER_MINOR               0
+#define VER_REVISION            1
+
 /* --------------------------------------------------------------------------
  *  Device Information used for Device Information Server Service (DISS)
  * ----------------------------------------------------------------------- */

@@ -19,6 +19,12 @@
 
 #include "app.h"
 #include "usb_hid_keys.h"
+#include "sys_fota.h"
+
+/* ----------------------------------------------------------------------------
+* Application Version
+* ------------------------------------------------------------------------- */
+SYS_FOTA_VERSION(VER_ID, VER_MAJOR, VER_MINOR, VER_REVISION);
 
 static struct on_semi_banner_str on_semi_banner[] =
 {
@@ -216,6 +222,12 @@ int main(void)
                                on_semi_banner[act_key].mod);
             }
         }
+
+        /* Start Update when button is pressed */
+		if (DIO_DATA->ALIAS[RECOVERY_DIO] == 0)
+		{
+			Sys_Fota_StartDfu(1);
+		}
 
         /* Refresh the watchdog timer */
         Sys_Watchdog_Refresh();

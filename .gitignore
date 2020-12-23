@@ -6,3 +6,4 @@ sw/bootloader/.tracecompass
 .cproject
 .project
 sw/PedalKbdApp/.settings
+sw/PedalKbdApp/Debug

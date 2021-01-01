@@ -78,6 +78,91 @@ static uint32_t on_semi_banner_size = \
     sizeof(struct on_semi_banner_str);
 static uint32_t act_key = 0;
 
+ARM_DRIVER_USART *uart;
+DRIVER_GPIO_t *gpio;
+char tx_buffer[] __attribute__ ((aligned(4))) = "RSL10 UART TEST";
+char rx_buffer[sizeof(tx_buffer)] __attribute__ ((aligned(4)));
+
+/* ----------------------------------------------------------------------------
+ * Function      : void Button_EventCallback(void)
+ * ----------------------------------------------------------------------------
+ * Description   : This function is a callback registered by the function
+ *                 Initialize. Based on event argument different actions are
+ *                 executed.
+ * Inputs        : None
+ * Outputs       : None
+ * Assumptions   : None
+ * ------------------------------------------------------------------------- */
+void Button_EventCallback(uint32_t event)
+{
+    static bool ignore_next_dio_int = false;
+    if (ignore_next_dio_int)
+    {
+        ignore_next_dio_int = false;
+    }
+    /* Button is pressed: Ignore next interrupt.
+     * This is required to deal with the debounce circuit limitations. */
+    else if (event == GPIO_EVENT_0_IRQ)
+    {
+		    ignore_next_dio_int = true;
+        uart->Send(tx_buffer, sizeof(tx_buffer)); /* start transmission */
+//TODO:       PRINTF("BUTTON PRESSED: START TRANSMISSION\n");
+
+    }
+}
+
+/* ----------------------------------------------------------------------------
+ * Function      : void Button_EventCallback(void)
+ * ----------------------------------------------------------------------------
+ * Description   : This function is a callback registered by the function
+ *                 Initialize. Based on event argument different actions are
+ *                 executed.
+ * Inputs        : None
+ * Outputs       : None
+ * Assumptions   : None
+ * ------------------------------------------------------------------------- */
+void Usart_EventCallBack(uint32_t event)
+{
+    /* Check if receive complete event occured */
+    if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)
+    {
+        /* Check if received data matches sent tx */
+        if (!strcmp(tx_buffer, rx_buffer))
+        {
+            /* Toggle led */
+            ToggleLed(2, 500);
+//TODO:            PRINTF("LED BLINKED: CORRECT_DATA_RECEIVED\n");
+        }
+
+        /* Receive next data */
+        uart->Receive(rx_buffer, sizeof(tx_buffer));
+    }
+}
+
+/* ----------------------------------------------------------------------------
+ * Function      : void ToggleLed(uint32_t n, uint32_t delay_ms)
+ * ----------------------------------------------------------------------------
+ * Description   : Toggle the led pin.
+ * Inputs        : n        - number of toggles
+ *                  : delay_ms - delay between each toggle [ms]
+ * Outputs       : None
+ * Assumptions   : None
+ * ------------------------------------------------------------------------- */
+void ToggleLed(uint32_t n, uint32_t delay_ms)
+{
+    for (; n > 0; n--)
+    {
+        /* Refresh the watchdog */
+        Sys_Watchdog_Refresh();
+
+        /* Toggle led diode */
+//TODO:        gpio->ToggleValue(LED_DIO);
+
+        /* Delay */
+        Sys_Delay_ProgramROM((delay_ms / 1000.0) * SystemCoreClock);
+    }
+}
+
 /* ----------------------------------------------------------------------------
  * Function      : void DIO0_IRQHandler(void)
  * ----------------------------------------------------------------------------
@@ -86,7 +171,7 @@ static uint32_t act_key = 0;
  * Outputs       : None
  * Assumptions   : None
  * ------------------------------------------------------------------------- */
-void DIO0_IRQHandler(void)
+void DIO1_IRQHandler(void)
 {
     static uint8_t ignore_next_dio_int = 0;
     if (ignore_next_dio_int)

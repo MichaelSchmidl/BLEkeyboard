@@ -104,12 +104,14 @@ void App_Initialize(void)
                                ADC_POS_INPUT_VBAT_DIV2));
 
     /* Configure DIOs */
+#if 0
     Sys_DIO_Config(BUTTON_DIO, DIO_MODE_GPIO_IN_0 | DIO_WEAK_PULL_UP |
                    DIO_LPF_DISABLE);
-    Sys_DIO_Config(LED_DIO_NUM, DIO_MODE_GPIO_OUT_0);
-    Sys_DIO_IntConfig(0, DIO_EVENT_TRANSITION | DIO_SRC(BUTTON_DIO) |
+    Sys_DIO_IntConfig(1, DIO_EVENT_TRANSITION | DIO_SRC(BUTTON_DIO) |
                       DIO_DEBOUNCE_ENABLE,
                       DIO_DEBOUNCE_SLOWCLK_DIV1024, 49);
+#endif
+    Sys_DIO_Config(LED_DIO_NUM, DIO_MODE_GPIO_OUT_0);
 
     /* Initialize the baseband and BLE stack */
     BLE_Initialize();
@@ -120,12 +122,24 @@ void App_Initialize(void)
     /* Initialize environment */
     App_Env_Initialize();
 
+    /* Initialize gpio structure */
+    gpio = &Driver_GPIO;
+
+    /* Initialize gpio driver */
+    gpio->Initialize(Button_EventCallback);
+
+    /* Initialize usart driver structure */
+    uart = &Driver_USART0;
+
+    /* Initialize usart, register callback function */
+    uart->Initialize(Usart_EventCallBack);
+
     /* Stop masking interrupts */
     __set_PRIMASK(PRIMASK_ENABLE_INTERRUPTS);
     __set_FAULTMASK(FAULTMASK_ENABLE_INTERRUPTS);
 
     /* Enable interrupts */
-    NVIC_EnableIRQ(DIO0_IRQn);
+//TODO:    NVIC_EnableIRQ(DIO0_IRQn);
 }
 
 /* ----------------------------------------------------------------------------

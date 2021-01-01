@@ -54,6 +54,11 @@ extern "C"
 #include "ble_sec.h"
 #include "ble_hogpd.h"
 
+#include <GPIO_RSLxx.h>
+#include <string.h>
+#include <stdio.h>
+#include <USART_RSLxx.h>
+
 /* ----------------------------------------------------------------------------
  * Defines
  * --------------------------------------------------------------------------*/
@@ -246,11 +251,27 @@ extern int Msg_Handler(ke_msg_id_t const msgid, void *param,
                        ke_task_id_t const dest_id,
                        ke_task_id_t const src_id);
 
-extern void DIO0_IRQHandler(void);
+extern void DIO1_IRQHandler(void);
 
 extern void Restart_Keystroke_Env(void);
 
 extern void Update_Keystroke_Env(void);
+
+/* ----------------------------------------------------------------------------
+ * Global variables and types
+ * --------------------------------------------------------------------------*/
+extern ARM_DRIVER_USART Driver_USART0;
+extern DRIVER_GPIO_t Driver_GPIO;
+
+extern ARM_DRIVER_USART *uart;
+extern DRIVER_GPIO_t *gpio;
+
+/* ---------------------------------------------------------------------------
+* Function prototype definitions
+* --------------------------------------------------------------------------*/
+void Usart_EventCallBack(uint32_t event);
+void Button_EventCallback(uint32_t event);
+void ToggleLed(uint32_t n, uint32_t delay_ms);
 
 /* ----------------------------------------------------------------------------
  * Close the 'extern "C"' block

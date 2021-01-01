@@ -1,13 +1,21 @@
+#############################
+# PROEJECT stuff
 doc
-ESP32 ARDUINO
 Debug
-# Windows stuff
+#############################
+# WINDOWS stuff
 *Thumbs.db
+#############################
+# CADSTAR stuff
+*pcb
+#############################
 # ECLIPSE stuff
 *.settings
 *.tracecompass
 #*.cproject
 #*.project
+#############################
 # other stuff
 initial FOTA App Download.jpg
 2020-12-23 15.41.02.jpg
+ESP32 ARDUINO

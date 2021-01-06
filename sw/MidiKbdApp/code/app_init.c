@@ -51,6 +51,9 @@ void App_Initialize(void)
 
     while (DIO_DATA->ALIAS[RECOVERY_DIO] == 0);
 
+#warning REMOVE THIS FOR SURE
+BondList_RemoveAll(); //!TODO remove it !!!!
+
     /* Configure the current trim settings for VCC, VDDA */
     ACS_VCC_CTRL->ICH_TRIM_BYTE = VCC_ICHTRIM_16MA_BYTE;
     ACS_VDDA_CP_CTRL->PTRIM_BYTE = VDDA_PTRIM_16MA_BYTE;
@@ -103,16 +106,6 @@ void App_Initialize(void)
                               (ADC_NEG_INPUT_GND |
                                ADC_POS_INPUT_VBAT_DIV2));
 
-    /* Configure DIOs */
-#if 0
-    Sys_DIO_Config(BUTTON_DIO, DIO_MODE_GPIO_IN_0 | DIO_WEAK_PULL_UP |
-                   DIO_LPF_DISABLE);
-    Sys_DIO_IntConfig(1, DIO_EVENT_TRANSITION | DIO_SRC(BUTTON_DIO) |
-                      DIO_DEBOUNCE_ENABLE,
-                      DIO_DEBOUNCE_SLOWCLK_DIV1024, 49);
-#endif
-    Sys_DIO_Config(LED_DIO_NUM, DIO_MODE_GPIO_OUT_0);
-
     /* Initialize the baseband and BLE stack */
     BLE_Initialize();
 	
@@ -137,9 +130,6 @@ void App_Initialize(void)
     /* Stop masking interrupts */
     __set_PRIMASK(PRIMASK_ENABLE_INTERRUPTS);
     __set_FAULTMASK(FAULTMASK_ENABLE_INTERRUPTS);
-
-    /* Enable interrupts */
-//TODO:    NVIC_EnableIRQ(DIO0_IRQn);
 }
 
 /* ----------------------------------------------------------------------------

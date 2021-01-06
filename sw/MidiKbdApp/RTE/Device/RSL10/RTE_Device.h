@@ -1354,7 +1354,7 @@
 // <i> Enabled GPIO2 configuration
 // <i> Default: 0
 #ifndef RTE_GPIO2_EN
- #define RTE_GPIO2_EN       0
+ #define RTE_GPIO2_EN       1
 #endif
 //   <o>Drive strength
 //       <0x0=> 2x drive strength
@@ -1382,7 +1382,7 @@
 //   <i> Defines the gpio pull configuration
 //   <i> Default: weak pull up
 #ifndef RTE_GPIO2_PULL_DEFAULT
- #define RTE_GPIO2_PULL_DEFAULT   1
+ #define RTE_GPIO2_PULL_DEFAULT   3
 #endif
 //   <o>IO mode
 //   <0x000=> GPIO_IN_0             <0x001=> GPIO_IN_1             <0x002=> GPIO_OUT_0            <0x003=> GPIO_OUT_1
@@ -1414,7 +1414,7 @@
 //   <i> Defines the io mode
 //   <i> Default: DISABLED
 #ifndef RTE_GPIO2_IOMODE_DEFAULT
- #define RTE_GPIO2_IOMODE_DEFAULT   0x101
+ #define RTE_GPIO2_IOMODE_DEFAULT   0x000
 #endif
 // </e>
 // <e>GPIO 3 configure
@@ -1906,7 +1906,7 @@
 // <i> Enabled GPIO10 configuration
 // <i> Default: 0
 #ifndef RTE_GPIO10_EN
- #define RTE_GPIO10_EN       0
+ #define RTE_GPIO10_EN       10
 #endif
 //   <o>Drive strength
 //       <0x0=> 2x drive strength
@@ -1966,7 +1966,7 @@
 //   <i> Defines the io mode
 //   <i> Default: DISABLED
 #ifndef RTE_GPIO10_IOMODE_DEFAULT
- #define RTE_GPIO10_IOMODE_DEFAULT   0x03F
+ #define RTE_GPIO10_IOMODE_DEFAULT   0x002
 #endif
 // </e>
 // <e>GPIO 11 configure
@@ -2338,7 +2338,7 @@
 //   <i> Defines the DIO0 interrupt source
 //   <i> Default: GPIO 0
 #ifndef RTE_GPIO_DIO0_SRC_DEFAULT
- #define RTE_GPIO_DIO0_SRC_DEFAULT   5
+ #define RTE_GPIO_DIO0_SRC_DEFAULT   2
 #endif
 //   <o>Trigger event
 //       <0x0=> none           <0x1=> high level      <0x2=> low level
@@ -2440,7 +2440,7 @@
 //   <i> Defines the interrupt trigger event
 //   <i> Default: rising edge
 #ifndef RTE_GPIO_DIO2_TRG_DEFAULT
- #define RTE_GPIO_DIO2_TRG_DEFAULT   3
+ #define RTE_GPIO_DIO2_TRG_DEFAULT   4
 #endif
 //   <o>Debounce filter
 //       <0x0=> disabled
@@ -2448,7 +2448,7 @@
 //   <i> Defines if debounce filter should be enabled
 //   <i> Default: disabled
 #ifndef RTE_GPIO_DIO2_DBC_DEFAULT
- #define RTE_GPIO_DIO2_DBC_DEFAULT   0
+ #define RTE_GPIO_DIO2_DBC_DEFAULT   1
 #endif
 //   <o>Pre-empt priority <0-0x7>
 //   <i> Defines the pre-empt priority
@@ -3802,7 +3802,7 @@
 //   <i> Defines the usart baudrate.
 //   <i> Default: 115200
 #ifndef RTE_USART0_BAUDRATE_DEFAULT
- #define RTE_USART0_BAUDRATE_DEFAULT   115200
+ #define RTE_USART0_BAUDRATE_DEFAULT   31250
 #endif
 // </e>
 // <e>DMA control

@@ -67,9 +67,9 @@ static struct on_semi_banner_str on_semi_banner[] =
     { 0x28,    /* Key ENTER */ 0x00 }
 #else
 #if 1
-    { KEY_LEFT,    /* Key Alt-Left */ KEY_MOD_LALT }
+    { KEY_LEFT,    /* Key Alt-Left */ KEY_MOD_LALT } // F7 ???
 #else
-	{ KEY_MEDIA_PREVIOUSSONG,    /* Key PreviousSond */ 0 }
+	{ KEY_MUTE,    0 }
 #endif
 #endif
 };
@@ -80,7 +80,7 @@ static uint32_t act_key = 0;
 
 ARM_DRIVER_USART *uart;
 DRIVER_GPIO_t *gpio;
-char tx_buffer[] __attribute__ ((aligned(4))) = "RSL10 UART TEST";
+char tx_buffer[1] __attribute__ ((aligned(4))) = ".";
 char rx_buffer[sizeof(tx_buffer)] __attribute__ ((aligned(4)));
 
 /* ----------------------------------------------------------------------------
@@ -105,9 +105,14 @@ void Button_EventCallback(uint32_t event)
     else if (event == GPIO_EVENT_0_IRQ)
     {
 		    ignore_next_dio_int = true;
-        uart->Send(tx_buffer, sizeof(tx_buffer)); /* start transmission */
-//TODO:       PRINTF("BUTTON PRESSED: START TRANSMISSION\n");
 
+		    /* Set the key status */
+#if 0
+		    app_env.key_pushed = true;
+		    app_env.key_state = KEY_PUSH;
+#endif
+//		    uart->Send(tx_buffer, sizeof(tx_buffer)); /* start transmission */
+//TODO:       PRINTF("BUTTON PRESSED: START TRANSMISSION\n");
     }
 }
 
@@ -123,19 +128,37 @@ void Button_EventCallback(uint32_t event)
  * ------------------------------------------------------------------------- */
 void Usart_EventCallBack(uint32_t event)
 {
-    /* Check if receive complete event occured */
+	typedef enum{
+		eWaitingForStatus,
+		eWaitingForProgramChangeData // 0xCx nn
+	} midiRecvState_t;
+	static midiRecvState_t midiRecvState = eWaitingForStatus;
+
+    /* Check if receive complete event occurred */
     if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)
     {
-        /* Check if received data matches sent tx */
-        if (!strcmp(tx_buffer, rx_buffer))
-        {
-            /* Toggle led */
-            ToggleLed(2, 500);
-//TODO:            PRINTF("LED BLINKED: CORRECT_DATA_RECEIVED\n");
-        }
-
+    	uint8_t recv = rx_buffer[0];
         /* Receive next data */
-        uart->Receive(rx_buffer, sizeof(tx_buffer));
+        uart->Receive(rx_buffer, sizeof(rx_buffer));
+        // handle received data
+        switch (midiRecvState)
+        {
+        	case eWaitingForStatus:
+        	{
+        		if ( 0xC0 == (recv & 0xF0))
+        		{
+            		midiRecvState = eWaitingForProgramChangeData;
+        		}
+        	}break;
+        	case eWaitingForProgramChangeData:
+        	{
+    		    app_env.key_pushed = true;
+    		    app_env.key_state = KEY_PUSH;
+        		midiRecvState = eWaitingForStatus;
+        	}break;
+        	default:
+        		midiRecvState = eWaitingForStatus;
+        }
     }
 }
 
@@ -156,37 +179,10 @@ void ToggleLed(uint32_t n, uint32_t delay_ms)
         Sys_Watchdog_Refresh();
 
         /* Toggle led diode */
-//TODO:        gpio->ToggleValue(LED_DIO);
+        gpio->ToggleValue(LED_DIO_NUM);
 
         /* Delay */
         Sys_Delay_ProgramROM((delay_ms / 1000.0) * SystemCoreClock);
-    }
-}
-
-/* ----------------------------------------------------------------------------
- * Function      : void DIO0_IRQHandler(void)
- * ----------------------------------------------------------------------------
- * Description   : Start the transactions
- * Inputs        : None
- * Outputs       : None
- * Assumptions   : None
- * ------------------------------------------------------------------------- */
-void DIO1_IRQHandler(void)
-{
-    static uint8_t ignore_next_dio_int = 0;
-    if (ignore_next_dio_int)
-    {
-        ignore_next_dio_int = 0;
-    }
-    else if (DIO_DATA->ALIAS[BUTTON_DIO] == 0)
-    {
-        /* Button is pressed: Ignore next interrupt.
-         * This is required to deal with the de-bounce circuit limitations. */
-        ignore_next_dio_int = 1;
-
-        /* Set the key status */
-        app_env.key_pushed = true;
-        app_env.key_state = KEY_PUSH;
     }
 }
 
@@ -263,6 +259,9 @@ int main(void)
     App_Initialize();
 
     SystemCoreClockUpdate();
+
+    // start receiving data
+    uart->Receive(rx_buffer, sizeof(rx_buffer));
 
     /* Main application loop:
      * - Run the kernel scheduler
